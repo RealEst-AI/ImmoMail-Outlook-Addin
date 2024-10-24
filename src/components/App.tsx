@@ -1,5 +1,3 @@
-// App.tsx
-
 import * as React from "react";
 import { Spinner, SpinnerType } from "office-ui-fabric-react";
 import OfficeAddinMessageBar from "./OfficeAddinMessageBar";
@@ -8,7 +6,6 @@ import Frame1 from "./Frame1";
 import Frame2 from "./Frame2";
 import Frame3 from "./Frame3";
 import ImmoMailScreen from "./ImmoMailScreen";
-
 export interface AppProps {
   title: string;
   isOfficeInitialized: boolean;
@@ -40,11 +37,6 @@ export default class App extends React.Component<AppProps, AppState> {
     this.switchToFrame1 = this.switchToFrame1.bind(this);
     this.switchToFrame2 = this.switchToFrame2.bind(this);
     this.switchToFrame3 = this.switchToFrame3.bind(this);
-  }
-
-  // Add componentDidMount to initiate login automatically
-  componentDidMount() {
-    this.login();
   }
 
   /*
