@@ -413,7 +413,40 @@ app.get('/fetchEmailsByFolderName', async (req, res) => {
 });
 
 
+// Define the endpoint that updates the customer profile based on a new perfect customer profile description
+app.post('/updateCustomerProfile', async (req, res) => {
+  const { outlookEmailId, newCustomerProfile } = req.body;
+  const querySpec = {
+    query: 'SELECT * FROM c WHERE c.outlookEmailId = @outlookEmailId',
+    parameters: [{ name: '@outlookEmailId', value: outlookEmailId }],
+  };
 
+  try {
+    const { resources: emails } = await client
+      .database(databaseId)
+      .container('Emails')
+      .items.query(querySpec)
+      .fetchAll();
+
+    if (emails.length > 0) {
+      const email = emails[0];
+      email.customerProfile = newCustomerProfile;
+
+      await client
+        .database(databaseId)
+        .container('Emails')
+        .item(email.id, email.userId)
+        .replace(email);
+
+      res.status(200).json({ message: 'Customer profile updated successfully.' });
+    } else {
+      res.status(404).json({ message: 'Email not found.' });
+    }
+  } catch (error) {
+    console.error('Error updating customer profile:', error);
+    res.status(500).json({ message: 'Error updating customer profile.' });
+  }
+});
 // Start the server
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);

@@ -474,6 +474,50 @@ const fetchEmailsByFolderName = async (folderName: string) => {
   };
   
 
+  const updateCustomerProfile = async (outlookEmailId: string, newCustomerProfile: string) => {
+    try {
+      const response = await fetch('https://cosmosdbbackendplugin.azurewebsites.net/updateCustomerProfile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ outlookEmailId, newCustomerProfile }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to update customer profile');
+      }
+  
+      const data = await response.json();
+      console.log('Customer profile updated successfully:', data);
+    } catch (error) {
+      console.error('Error updating customer profile:', error);
+    }
+  };
+  
+  const handleAnalyseClickAndUpdateProfile = async () => {
+    await handleAnalyseClick();
+  
+    // Get the REST-formatted ID of the current email
+    const restId = Office.context.mailbox.convertToRestId(
+      Office.context.mailbox.item.itemId,
+      Office.MailboxEnums.RestVersion.v2_0
+    );
+  
+    // Fetch all emails with the same folder name
+    const folderName = await fetchFolderNameFromBackend(restId);
+    if (folderName) {
+      const emails = await fetchEmailsByFolderName(folderName);
+  
+      // Update the customer profile for each email
+      for (const email of emails) {
+        const emailContent = email.emailBody;
+        const newCustomerProfile = await determineCustomerProfile(emailContent);
+        await updateCustomerProfile(email.outlookEmailId, newCustomerProfile);
+      }
+    }
+  };
+  
   // Modify the useEffect hook
   useEffect(() => {
     const fetchEmailContent = async () => {
@@ -587,7 +631,7 @@ const fetchEmailsByFolderName = async (folderName: string) => {
           appearance="primary"
           style={{ width: "100%" }}
           onClick={() => {
-            handleAnalyseClick();
+            handleAnalyseClickAndUpdateProfile();
             switchToFrame2(requestInput); 
           }}
         >
