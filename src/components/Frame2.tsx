@@ -26,10 +26,10 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
   const [rejectionTemplate, setRejectionTemplate] = useState("");
   const [customerProfile, setCustomerProfile] = useState("");
 
-  const restId = Office.context.mailbox.convertToRestId(
+  const restId = Office.context.mailbox.item ? Office.context.mailbox.convertToRestId(
     Office.context.mailbox.item.itemId,
     Office.MailboxEnums.RestVersion.v2_0
-  );
+  ) : null;
   console.log("REST-formatted Item ID:", restId);
   const emailId =restId;
   const fetchCustomerProfileFromBackend = async (outlookEmailId: string) => {
@@ -265,7 +265,7 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
   
   useEffect(() => {
     const fetchEmailContent = async () => {
-      if (Office.context.mailbox.item) {
+      if (Office.context.mailbox.item && Office.context.mailbox.item.itemId) {
         // Get the REST ID of the current email
         const restId = Office.context.mailbox.convertToRestId(
           Office.context.mailbox.item.itemId,
