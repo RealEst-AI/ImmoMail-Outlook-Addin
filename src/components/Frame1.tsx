@@ -122,7 +122,7 @@ const Frame1: React.FC<Frame1Props> = ({ switchToFrame2, displayError, accessTok
           },
           {
             role: "user",
-            content: `Basierend auf den folgenden Kriterien für den perfekten Kunden: "${perfectCustomerProfile}", gib eine kurze, strukturierte Beschreibung zu dem Mieter auf Deutsch und bewerte den Mieter auf einer Skala von 1 bis 10, wobei 10 der wünschenswerteste Mieter ist. Keine Titel oder Sonstiges, strukturiert und kompakt in Stichpunkten. Gehen nicht nur auf die Kriterien ein sondern fuege auch einfach Zusammenfassungstichpunkte zum Mieter hinzu. Hier ist die Email/Anfrage vom Mieter auf Basis der, der Mieter bewertet werden muss: ${emailContent}`,
+            content: `Basierend auf den folgenden Kriterien für den perfekten Kunden: "${perfectCustomerProfile}", gib eine kurze, strukturierte Beschreibung zu dem Mieter auf Deutsch und bewerte den Mieter auf einer Skala von 1 bis 10, wobei 10 der wünschenswerteste Mieter ist. Keine Titel oder Sonstiges, strukturiert und kompakt in Stichpunkten: ${emailContent}`,
           },
         ],
         max_tokens: 200,
