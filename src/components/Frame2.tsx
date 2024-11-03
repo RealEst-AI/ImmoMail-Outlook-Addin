@@ -13,7 +13,7 @@ import OPENAI_API_KEY from "../../config/openaiKey";
 import axios from "axios";
 
 interface Frame2Props {
-  switchToFrame3: (requestInput ) => void;
+  switchToFrame3: (requestInput) => void;
   accessToken: string;
   requestInput: string;
 }
@@ -25,6 +25,7 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
   const [confirmationTemplate, setConfirmationTemplate] = useState("");
   const [rejectionTemplate, setRejectionTemplate] = useState("");
   const [customerProfile, setCustomerProfile] = useState("");
+  const [emails, setEmails] = useState([]); // State for emails
 
   const [isFormValid, setIsFormValid] = useState(false);
   const [showConfirmationTemplateError, setShowConfirmationTemplateError] = useState(false);
@@ -285,7 +286,13 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
         // Fetch folder name and number of emails with the same folder
         const folderName = await fetchFolderNameFromBackend(restId);
         if (folderName) {
-          const emails = await fetchEmailsByFolderName(folderName);
+          let emails = await fetchEmailsByFolderName(folderName);
+          console.log("Fetched emails:", emails);
+
+          // Sort emails by rating in descending order
+          emails = emails.sort((a, b) => b.rating - a.rating);
+
+          setEmails(emails); // Store the sorted emails in state
           const numberOfEmails = emails.length;
 
           // Parse requestInput to get the number of accepted emails
@@ -385,6 +392,12 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
     validateForm();
   }, [confirmationTemplate, rejectionTemplate]);
 
+  // Function to handle MarkdownCard click
+  const handleCardClick = (email) => {
+    console.log("Clicked email:", email);
+    // Implement any desired functionality here, such as displaying more details
+  };
+
   return (
     <FluentProvider theme={webLightTheme}>
       <div style={{ padding: "20px", maxWidth: "400px", margin: "0 auto" }}>
@@ -429,6 +442,13 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
           Drafts erstellen
         </Button>
       </div>
+      {/* Display sorted customer profiles */}
+      {emails.map((email, index) => (
+          <div key={index} onClick={() => handleCardClick(email)}>
+            <MarkdownCard markdown={email.customerProfile} />
+          </div>
+        ))}
+
     </FluentProvider>
   );
 };

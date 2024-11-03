@@ -394,7 +394,7 @@ app.get('/fetchFolderName', async (req, res) => {
 app.get('/fetchEmailsByFolderName', async (req, res) => {
   const folderName = req.query.folderName;
   const querySpec = {
-    query: 'SELECT c.outlookEmailId, c.rating, c.emailBody FROM c WHERE c.folder = @folderName',
+    query: 'SELECT c.outlookEmailId, c.rating, c.emailBody, c.customerProfile FROM c WHERE c.folder = @folderName',
     parameters: [{ name: '@folderName', value: folderName }],
   };
 
