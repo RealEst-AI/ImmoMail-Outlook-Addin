@@ -314,30 +314,56 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
 
 
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
-
-    const pollForEmailUpdate = async () => {
-      const customerProfile = await fetchCustomerProfileFromBackend(emailId);
-      const objectname = await fetchObjectNameFromCosmosDB(emailId);
-
-      if (customerProfile && objectname) {
-        // Update the state with new data
-        setCustomerProfile(customerProfile);
-        setPropertyName(objectname);
-        
-        // Clear the polling interval once the email is fetched
+    let intervalId: NodeJS.Timeout | null = null;
+  
+    const fetchAndSetProfile = async () => {
+      const profile = await fetchCustomerProfileFromBackend(emailId);
+      const name = await fetchObjectNameFromCosmosDB(emailId);
+  
+      if (profile && name) {
+        setCustomerProfile(profile);
+        setPropertyName(name);
+      }
+    };
+  
+    const startInitialPolling = async () => {
+      for (let i = 0; i < 5; i++) {
+        await fetchAndSetProfile();
+  
+        // Stop the loop if customerProfile is updated
+        if (customerProfile) {
+          return;
+        }
+  
+        // Wait for 1 second before the next attempt
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+    };
+  
+    const startRegularPolling = () => {
+      // Poll every 2 seconds
+      intervalId = setInterval(fetchAndSetProfile, 2000);
+    };
+  
+    if (!customerProfile) {
+      // Initial polling for up to 5 seconds
+      startInitialPolling().then(() => {
+        if (!intervalId) {
+          startRegularPolling();
+        }
+      });
+    } else {
+      startRegularPolling();
+    }
+  
+    return () => {
+      // Clean up on component unmount
+      if (intervalId) {
         clearInterval(intervalId);
       }
     };
-
-    // Start polling every 2 seconds
-    intervalId = setInterval(pollForEmailUpdate, 2000);
-
-    return () => {
-      // Clean up the interval on component unmount
-      clearInterval(intervalId);
-    };
-  }, [emailId]);
+  }, [emailId, customerProfile]);
+  
 
   return (
     <FluentProvider theme={webLightTheme}>
