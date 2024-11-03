@@ -395,8 +395,24 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
   // Function to handle MarkdownCard click
   const handleCardClick = (email) => {
     console.log("Clicked email:", email);
-    // Implement any desired functionality here, such as displaying more details
+    openEmailItem(email.outlookEmailId);
   };
+  
+  const openEmailItem = (itemId: string) => {
+    try {
+      // Convert the item ID to the required format
+      const restId = Office.context.mailbox.convertToRestId(
+        itemId,
+        Office.MailboxEnums.RestVersion.v1_0
+      );
+  
+      // Use displayMessageForm to open the email
+      Office.context.mailbox.displayMessageForm(restId);
+    } catch (error) {
+      console.error("Error opening email item:", error);
+    }
+  };
+  
 
   return (
     <FluentProvider theme={webLightTheme}>
