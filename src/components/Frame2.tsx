@@ -104,56 +104,50 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
   // Function to create a draft reply and move it to the "akzeptiert" folder
   const createDraftReplyAndMove = async () => {
     try {
-      // Fetch the folder name from Cosmos DB for the current email
+      // Fetch all emails with the same folder name from Cosmos DB
       const folderName = await fetchFolderNameFromBackend(emailId);
   
       if (!folderName) {
         console.error("Could not obtain folder name from Cosmos DB.");
         return;
       }
-  
-      // Ensure the folder exists and get its ID
-      const folderId = await ensureFolderExists(folderName);
-  
-      if (!folderId) {
-        console.error(`Could not obtain folder ID for folder: ${folderName}`);
-        return;
-      }
-  
-      // Fetch all emails with the same folder name from Cosmos DB
       let emails = await fetchEmailsByFolderName(folderName);
   
       if (!emails || emails.length === 0) {
         console.log(`No emails found with folder name: ${folderName}`);
         return;
       }
-
+  
       // Parse requestInput to get the number of accepted emails
       const numberOfAcceptedEmails = parseInt(requestInput, 10);
-
+  
       if (isNaN(numberOfAcceptedEmails) || numberOfAcceptedEmails < 0) {
         console.error("Invalid number in requestInput");
         return;
       }
-
+  
       // Sort emails by rating in descending order
       emails.sort((a, b) => b.rating - a.rating);
-
+  
       // Split the emails into accepted and rejected arrays
       const acceptedEmails = emails.slice(0, numberOfAcceptedEmails);
       const rejectedEmails = emails.slice(numberOfAcceptedEmails);
-
+  
+      // Ensure 'akzeptiert' and 'abgelehnt' folders exist and get their IDs
+      const acceptedFolderId = await ensureFolderExists("akzeptiert"+folderName);
+      const rejectedFolderId = await ensureFolderExists("abgelehnt"+folderName);
+  
       // For accepted emails, create drafts with confirmationTemplate
       for (const email of acceptedEmails) {
-        await createDraftReplyForEmail(email.outlookEmailId, folderId, confirmationTemplate);
-      }
-
-      // For rejected emails, create drafts with rejectionTemplate
-      for (const email of rejectedEmails) {
-        await createDraftReplyForEmail(email.outlookEmailId, folderId, rejectionTemplate);
+        await createDraftReplyForEmail(email.outlookEmailId, acceptedFolderId, confirmationTemplate);
       }
   
-      console.log("Draft replies created and moved to the folder.");
+      // For rejected emails, create drafts with rejectionTemplate
+      for (const email of rejectedEmails) {
+        await createDraftReplyForEmail(email.outlookEmailId, rejectedFolderId, rejectionTemplate);
+      }
+  
+      console.log("Draft replies created and moved to the appropriate folders.");
   
       // Switch to Frame3
       switchToFrame3(requestInput);

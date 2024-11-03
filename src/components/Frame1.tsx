@@ -318,7 +318,7 @@ const Frame1: React.FC<Frame1Props> = ({ switchToFrame2, displayError, accessTok
       });
       const openai = new OpenAIApi(configuration);
   
-      const folderName = `Folder_${currentEmailLocation}_${currentEmailObjectName}`;
+      const folderName = `_${currentEmailLocation}_${currentEmailObjectName}`;
   
       for (const email of emailsWithoutFolder) {
         const gptResponse = await openai.createChatCompletion({
