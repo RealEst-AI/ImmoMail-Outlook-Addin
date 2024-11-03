@@ -529,7 +529,7 @@ const fetchEmailsByFolderName = async (folderName: string) => {
       const folderName = await fetchFolderNameFromBackend(restId);
       if (folderName) {
         const emails = await fetchEmailsByFolderName(folderName);
-        setRequests(emails.length.toString()); // Update requests with the number of emails
+        setRequests(emails && emails.length ? emails.length.toString() : "0"); // Update requests with the number of emails
       } else {
         setRequests("nicht gespeichert");
       }
