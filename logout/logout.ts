@@ -4,6 +4,7 @@
  */
 
 import { PublicClientApplication } from '@azure/msal-browser';
+import settings from '../appSettings';
 
 let pca;
 
@@ -12,7 +13,7 @@ Office.onReady(async () => {
     onMessageFromParent);
   pca = new PublicClientApplication({
     auth: {
-      clientId: '25cb9a5b-c5cf-4256-9c38-ce0ce1978167',
+      clientId: settings.clientId,
       authority: 'https://login.microsoftonline.com/common',
       redirectUri: `${window.location.origin}/login/login.html` // Must be registered as "spa" type.
     },
