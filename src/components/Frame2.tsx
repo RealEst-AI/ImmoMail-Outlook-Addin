@@ -26,6 +26,10 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
   const [rejectionTemplate, setRejectionTemplate] = useState("");
   const [customerProfile, setCustomerProfile] = useState("");
 
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [showConfirmationTemplateError, setShowConfirmationTemplateError] = useState(false);
+  const [showRejectionTemplateError, setShowRejectionTemplateError] = useState(false);
+
   const restId = Office.context.mailbox.item ? Office.context.mailbox.convertToRestId(
     Office.context.mailbox.item.itemId,
     Office.MailboxEnums.RestVersion.v2_0
@@ -364,6 +368,22 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
     };
   }, [emailId, customerProfile]);
   
+  useEffect(() => {
+    const validateForm = () => {
+      const isConfirmationTemplateValid = confirmationTemplate.trim() !== "";
+      const isRejectionTemplateValid = rejectionTemplate.trim() !== "";
+
+      setShowConfirmationTemplateError(!isConfirmationTemplateValid);
+      setShowRejectionTemplateError(!isRejectionTemplateValid);
+
+      setIsFormValid(
+        isConfirmationTemplateValid &&
+        isRejectionTemplateValid
+      );
+    };
+
+    validateForm();
+  }, [confirmationTemplate, rejectionTemplate]);
 
   return (
     <FluentProvider theme={webLightTheme}>
@@ -386,6 +406,7 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
             height: '100px',
           }}
         />
+        {showConfirmationTemplateError && <Text style={{ color: "red" }}>Bestätigungsemail-Template ist erforderlich</Text>}
         <Textarea
           placeholder="Template für Absageemails"
           value={rejectionTemplate}
@@ -396,12 +417,14 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
             height: '100px',
           }}
         />
+        {showRejectionTemplateError && <Text style={{ color: "red" }}>Absageemail-Template ist erforderlich</Text>}
 
         {/* Drafts Button */}
         <Button
           appearance="primary"
           style={{ width: "100%" }}
           onClick={createDraftReplyAndMove}
+          disabled={!isFormValid}
         >
           Drafts erstellen
         </Button>

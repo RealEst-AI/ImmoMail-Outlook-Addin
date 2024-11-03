@@ -26,6 +26,12 @@ const Frame1: React.FC<Frame1Props> = ({ switchToFrame2, displayError, accessTok
   const [requestInput, setRequestInput] = useState("");
   const [customerProfile, setCustomerProfile] = useState("noch nicht gespeichert");
 
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [showLocationError, setShowLocationError] = useState(false);
+  const [showNameError, setShowNameError] = useState(false);
+  const [showRequestsError, setShowRequestsError] = useState(false);
+  const [showPerfectCustomerProfileError, setShowPerfectCustomerProfileError] = useState(false);
+  const [showRequestInputError, setShowRequestInputError] = useState(false);
 
   const determineLocation = async (emailContent: string) => {
     const configuration = new Configuration({
@@ -595,13 +601,40 @@ const fetchEmailsByFolderName = async (folderName: string) => {
   };
 }, []);
 
+  useEffect(() => {
+    const validateForm = () => {
+      const isLocationValid = location !== "bisher nicht gespeichert";
+      const isNameValid = name !== "bisher nicht gespeichert";
+      const isRequestsValid = requests !== "bisher nicht gespeichert";
+      const isPerfectCustomerProfileValid = perfectCustomerProfile.trim() !== "";
+      const isRequestInputValid = requestInput.trim() !== "";
 
+      setShowLocationError(!isLocationValid);
+      setShowNameError(!isNameValid);
+      setShowRequestsError(!isRequestsValid);
+      setShowPerfectCustomerProfileError(!isPerfectCustomerProfileValid);
+      setShowRequestInputError(!isRequestInputValid);
+
+      setIsFormValid(
+        isLocationValid &&
+        isNameValid &&
+        isRequestsValid &&
+        isPerfectCustomerProfileValid &&
+        isRequestInputValid
+      );
+    };
+
+    validateForm();
+  }, [location, name, requests, perfectCustomerProfile, requestInput]);
 
   return (
     <FluentProvider theme={webLightTheme}>
       <div style={{ padding: "20px", width: "calc(100% - 40px)", margin: "0 auto" }}>
         
         <MarkdownCard markdown={`**Objekt:** ${name}\n\n**Ort:** ${location}\n\n Anzahl Anfragen: **${requests}**`} />
+        {showLocationError && <Text style={{ color: "red" }}>Ort ist erforderlich</Text>}
+        {showNameError && <Text style={{ color: "red" }}>Name ist erforderlich</Text>}
+        {showRequestsError && <Text style={{ color: "red" }}>Anzahl der Anfragen ist erforderlich</Text>}
 
         <Textarea
           placeholder="Beschreiben sie die Voraussetzungen für den perfekten Kunden"
@@ -613,6 +646,7 @@ const fetchEmailsByFolderName = async (folderName: string) => {
         height: '100px', // Fixed height to allow for multiple lines
           }}
         />
+        {showPerfectCustomerProfileError && <Text style={{ color: "red" }}>Beschreibung des perfekten Kunden ist erforderlich</Text>}
         <MarkdownCard markdown={customerProfile} />
 
         <Text style={{ fontSize: "16px", marginBottom: "10px" }}>
@@ -627,7 +661,7 @@ const fetchEmailsByFolderName = async (folderName: string) => {
             width: '100%', // Ensure the input takes the full width of its container
           }}
         />
-       
+        {showRequestInputError && <Text style={{ color: "red" }}>Anzahl der Mieteranfragen ist erforderlich</Text>}
 
         <Button
           appearance="primary"
@@ -636,6 +670,7 @@ const fetchEmailsByFolderName = async (folderName: string) => {
             handleAnalyseClickAndUpdateProfile();
             switchToFrame2(requestInput); 
           }}
+          disabled={!isFormValid}
         >
           Analyse durchführen
         </Button>

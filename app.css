@@ -133,3 +133,10 @@ h6 {
         width: 100%;
     }
 }
+
+/* Styles for red indicator to highlight incomplete fields */
+.error-indicator {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}

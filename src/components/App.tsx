@@ -108,8 +108,9 @@ export default class App extends React.Component<AppProps, AppState> {
     this.setState({ currentFrame: "Frame2", requestInput });
   };
 
-  switchToFrame3 = () => {
-    this.setState({ currentFrame: "Frame3" });
+  // Modify `switchToFrame3` to accept `requestInput`
+  switchToFrame3 = (requestInput: string) => {
+    this.setState({ currentFrame: "Frame3", requestInput });
   };
 
   render() {
