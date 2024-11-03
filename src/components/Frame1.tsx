@@ -603,29 +603,22 @@ const fetchEmailsByFolderName = async (folderName: string) => {
 
   useEffect(() => {
     const validateForm = () => {
-      const isLocationValid = location !== "bisher nicht gespeichert";
-      const isNameValid = name !== "bisher nicht gespeichert";
-      const isRequestsValid = requests !== "bisher nicht gespeichert";
       const isPerfectCustomerProfileValid = perfectCustomerProfile.trim() !== "";
       const isRequestInputValid = requestInput.trim() !== "";
 
-      setShowLocationError(!isLocationValid);
-      setShowNameError(!isNameValid);
-      setShowRequestsError(!isRequestsValid);
+
       setShowPerfectCustomerProfileError(!isPerfectCustomerProfileValid);
       setShowRequestInputError(!isRequestInputValid);
 
       setIsFormValid(
-        isLocationValid &&
-        isNameValid &&
-        isRequestsValid &&
+
         isPerfectCustomerProfileValid &&
         isRequestInputValid
       );
     };
 
     validateForm();
-  }, [location, name, requests, perfectCustomerProfile, requestInput]);
+  }, [ perfectCustomerProfile, requestInput]);
 
   return (
     <FluentProvider theme={webLightTheme}>
