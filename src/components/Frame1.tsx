@@ -512,6 +512,8 @@ const fetchEmailsByFolderName = async (folderName: string) => {
       // Update the customer profile for each email
       for (const email of emails) {
         const emailContent = email.emailBody;
+        console.log(email);
+        console.log(emailContent);
         const newCustomerProfile = await determineCustomerProfile(emailContent);
         await updateCustomerProfile(email.outlookEmailId, newCustomerProfile);
       }
