@@ -4,14 +4,14 @@
   xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
   xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides/1.0" xsi:type="MailApp">
   <!-- IMPORTANT! Id must be unique for your add-in, if you reuse this manifest ensure that you change this id to a new GUID. -->
-  <Id>867f8385-2825-423d-a962-cde3417d5087</Id>
+  <Id>867f8385-2825-423d-a962-cde3417d5987</Id>
 
   <!--Version. Updates from the store only get triggered if there is a version change. -->
   <Version>1.0.0.0</Version>
   <ProviderName>Office Developer Education Team</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
   <!-- The display name of your add-in. Used on the store and various places of the Office UI such as the add-ins dialog. -->
-  <DisplayName DefaultValue="Local Microsoft Graph Data" />
+  <DisplayName DefaultValue="Local ImmoMail" />
   <Description DefaultValue="Uses Implicit Flow to get an access token to Microsoft Graph and then gets some Graph data."/>
 
   <!-- Icon for your add-in. Used on installation screens and the add-ins dialog. -->
@@ -51,33 +51,19 @@
       </Requirements>
       <Hosts>
         <Host xsi:type="MailHost">
-          
           <DesktopFormFactor>
-          <!--"This code enables a customizable message to be displayed when the add-in is loaded successfully upon individual install."-->
-        
-          <!-- Function file is a HTML page that includes the JavaScript where functions for ExecuteAction will be called.
-            Think of the FunctionFile as the code behind ExecuteFunction. -->
+          <!-- Function file is a HTML page that includes the JavaScript where functions for ExecuteAction will be called. -->
           <FunctionFile resid="Contoso.DesktopFunctionFile.Url" />
 
           <!-- PrimaryCommandSurface is the main Office Ribbon. -->
           <ExtensionPoint xsi:type="MessageReadCommandSurface">
-            <!-- Use OfficeTab to extend an existing Tab. Use CustomTab to create a new tab. -->
             <OfficeTab id="TabHome">
-              <!-- Ensure you provide a unique id for the group. Recommendation for any IDs is to namespace using your company name. -->
               <Group id="Contoso.Group1">
-                <!-- Label for your group. resid must point to a ShortString resource. -->
-                <Label resid="Contoso.Group1Label" />
-                <!-- Icons. Required sizes 16,32,80, optional 20, 24, 40, 48, 64. Strongly recommended to provide all sizes for great UX. -->
-                <!-- Use PNG icons. All URLs on the resources section must use HTTPS. -->
-                
-
-                <!-- Control. It can be of type "Button" or "Menu". -->
+                <Label resid="Contoso.GroupLabel" />
                 <Control xsi:type="Button" id="Contoso.TaskpaneButton">
                   <Label resid="Contoso.TaskpaneButton.Label" />
                   <Supertip>
-                    <!-- ToolTip title. resid must point to a ShortString resource. -->
                     <Title resid="Contoso.TaskpaneButton.Label" />
-                    <!-- ToolTip description. resid must point to a LongString resource. -->
                     <Description resid="Contoso.TaskpaneButton.Tooltip" />
                   </Supertip>
                   <Icon>
@@ -85,11 +71,7 @@
                     <bt:Image size="32" resid="Contoso.tpicon_32x32" />
                     <bt:Image size="80" resid="Contoso.tpicon_80x80" />
                   </Icon>
-
-                  <!-- This is what happens when the command is triggered (E.g. click on the Ribbon). Supported actions are ExecuteFunction or ShowTaskpane. -->
                   <Action xsi:type="ShowTaskpane">
-                    
-                    <!-- Provide a url resource id for the location that will be displayed on the task pane. -->
                     <SourceLocation resid="Contoso.Taskpane.Url" />
                     <SupportsPinning>true</SupportsPinning>
                   </Action>
@@ -97,11 +79,37 @@
               </Group>
             </OfficeTab>
           </ExtensionPoint>
+
+          <!-- Added ExtensionPoint for MessageComposeCommandSurface -->
+          <ExtensionPoint xsi:type="MessageComposeCommandSurface">
+            <OfficeTab id="TabNewMailMessage">
+              <Group id="Contoso.Group1C">
+                <Label resid="Contoso.GroupLabelC" />
+                <Control xsi:type="Button" id="Contoso.TaskpaneButtonC">
+                  <Label resid="Contoso.TaskpaneButtonC.Label" />
+                  <Supertip>
+                    <Title resid="Contoso.TaskpaneButtonC.Label" />
+                    <Description resid="Contoso.TaskpaneButtonC.Tooltip" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Contoso.tpicon_16x16" />
+                    <bt:Image size="32" resid="Contoso.tpicon_32x32" />
+                    <bt:Image size="80" resid="Contoso.tpicon_80x80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <SourceLocation resid="Contoso.Taskpane.Url" />
+                    <SupportsPinning>true</SupportsPinning>
+                  </Action>
+                </Control>
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+
         </DesktopFormFactor>
       </Host>
     </Hosts>
 
-    <!-- You can use resources across hosts and form factors. -->
+    <!-- Resources -->
     <Resources>
       <bt:Images>
         <bt:Image id="Contoso.tpicon_16x16" DefaultValue="https://localhost:3000/assets/Onedrive_Charts_icon_16x16px.png" />
@@ -113,16 +121,23 @@
         <bt:Url id="Contoso.GetStarted.LearnMoreUrl" DefaultValue="https://go.microsoft.com/fwlink/?LinkId=276812" />
         <bt:Url id="Contoso.DesktopFunctionFile.Url" DefaultValue="https://localhost:3000/function-file/function-file.html" />
       </bt:Urls>
-      <!-- ShortStrings max characters==125. -->
+      <!-- ShortStrings max characters == 125, IDs max length == 32 -->
       <bt:ShortStrings>
+        <!-- Read mode strings -->
         <bt:String id="Contoso.TaskpaneButton.Label" DefaultValue="Open Add-in" />
-        <bt:String id="Contoso.Group1Label" DefaultValue="OneDrive Files" />
+        <bt:String id="Contoso.GroupLabel" DefaultValue="OneDrive Files" />
         <bt:String id="Contoso.GetStarted.Title" DefaultValue="Microsoft Graph data add-in has loaded successfully." />
+        <!-- Compose mode strings -->
+        <bt:String id="Contoso.TaskpaneButtonC.Label" DefaultValue="Open Add-in" />
+        <bt:String id="Contoso.GroupLabelC" DefaultValue="OneDrive Files" />
       </bt:ShortStrings>
-      <!-- LongStrings max characters==250. -->
+      <!-- LongStrings max characters == 250, IDs max length == 32 -->
       <bt:LongStrings>
+        <!-- Read mode strings -->
         <bt:String id="Contoso.TaskpaneButton.Tooltip" DefaultValue="Get files stored on OneDrive" />
         <bt:String id="Contoso.GetStarted.Description" DefaultValue="Choose Open Add-in, then Connect to Office 365 to get started." />
+        <!-- Compose mode strings -->
+        <bt:String id="Contoso.TaskpaneButtonC.Tooltip" DefaultValue="Get files stored on OneDrive" />
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
