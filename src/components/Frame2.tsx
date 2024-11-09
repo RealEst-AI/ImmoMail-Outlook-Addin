@@ -135,8 +135,8 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
       emails.sort((a, b) => b.rating - a.rating);
   
       // Split the emails into accepted and rejected arrays
-      const acceptedEmails = emails.slice(0, numberOfAcceptedEmails);
-      const rejectedEmails = emails.slice(numberOfAcceptedEmails);
+      const acceptedEmails = emails.filter(email => email.rating > 7).slice(0, numberOfAcceptedEmails);
+      const rejectedEmails = emails.filter(email => email.rating <= 7).concat(emails.slice(numberOfAcceptedEmails));
   
       // Ensure 'akzeptiert' and 'abgelehnt' folders exist and get their IDs
       const acceptedFolderId = await ensureFolderExists("akzeptiert"+folderName);
