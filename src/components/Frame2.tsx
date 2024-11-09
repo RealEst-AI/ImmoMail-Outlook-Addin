@@ -154,6 +154,11 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
   
       console.log("Draft replies created and moved to the appropriate folders.");
   
+      // Delete the original emails from the inbox
+      for (const email of emails) {
+        await deleteEmail(email.outlookEmailId);
+      }
+  
       // Switch to Frame3
       switchToFrame3(requestInput);
     } catch (error) {
@@ -267,6 +272,21 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
     }
   };
   
+  const deleteEmail = async (emailId: string) => {
+    try {
+      await axios.delete(
+        `https://graph.microsoft.com/v1.0/me/messages/${emailId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      console.log(`Email ${emailId} deleted from inbox.`);
+    } catch (error) {
+      console.error(`Error deleting email ${emailId}:`, error);
+    }
+  };
   
   useEffect(() => {
     const fetchEmailContent = async () => {
