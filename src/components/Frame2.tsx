@@ -5,13 +5,13 @@ import {
   Button,
   Input,
   Text,
-  Textarea,
   Switch,
 } from "@fluentui/react-components";
 import MarkdownCard from "./MarkdownCard";
 import { Configuration, OpenAIApi } from "openai";
 import OPENAI_API_KEY from "../../config/openaiKey";
 import axios from "axios";
+import ContentEditable from "react-contenteditable";
 
 interface Frame2Props {
   switchToFrame3: (requestInput) => void;
@@ -447,7 +447,7 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
 
   return (
     <FluentProvider theme={webLightTheme}>
-      <div style={{ padding: "20px", maxWidth: "400px", margin: "0 auto" }}>
+      <div style={{ padding: "20px", margin: "0 auto" }}>
         {/* Property Information */}
         <MarkdownCard markdown={`**${propertyName}**`} />
         <MarkdownCard markdown={requestsInfo} />
@@ -456,26 +456,40 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
         
 
         {/* Templates */}
-        <Textarea
-          placeholder="Template für Bestätigungsemail"
-          value={confirmationTemplate}
+        <ContentEditable
+          html={confirmationTemplate}
           onChange={(e) => setConfirmationTemplate(e.target.value)}
+          tagName="div"
           style={{
             marginBottom: "10px",
-            width: '100%',
             height: '100px',
+            border: '1px solid #ccc',
+            padding: '10px',
+            overflow: 'auto',
+            whiteSpace: 'pre-wrap',
+            wordWrap: 'break-word',
+            resize: 'both',
+            boxSizing: 'border-box',
           }}
+          
         />
         {showConfirmationTemplateError && <Text style={{ color: "red" }}>Bestätigungsemail-Template ist erforderlich</Text>}
-        <Textarea
-          placeholder="Template für Absageemails"
-          value={rejectionTemplate}
+        <ContentEditable
+          html={rejectionTemplate}
           onChange={(e) => setRejectionTemplate(e.target.value)}
+          tagName="div"
           style={{
-            marginBottom: "20px",
-            width: '100%',
+            marginBottom: "10px",
             height: '100px',
+            border: '1px solid #ccc',
+            padding: '10px',
+            overflow: 'auto',
+            whiteSpace: 'pre-wrap',
+            wordWrap: 'break-word',
+            resize: 'both',
+            boxSizing: 'border-box',
           }}
+          
         />
         {showRejectionTemplateError && <Text style={{ color: "red" }}>Absageemail-Template ist erforderlich</Text>}
         {/* Toggle Switch */}
