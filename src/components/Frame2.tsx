@@ -6,6 +6,7 @@ import {
   Input,
   Text,
   Textarea,
+  Switch,
 } from "@fluentui/react-components";
 import MarkdownCard from "./MarkdownCard";
 import { Configuration, OpenAIApi } from "openai";
@@ -26,6 +27,7 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
   const [rejectionTemplate, setRejectionTemplate] = useState("");
   const [customerProfile, setCustomerProfile] = useState("");
   const [emails, setEmails] = useState([]); // State for emails
+  const [deleteEmailsToggle, setDeleteEmailsToggle] = useState(localStorage.getItem("deleteEmailsToggle") === "true");
 
   const [isFormValid, setIsFormValid] = useState(false);
   const [showConfirmationTemplateError, setShowConfirmationTemplateError] = useState(false);
@@ -154,9 +156,11 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
   
       console.log("Draft replies created and moved to the appropriate folders.");
   
-      // Delete the original emails from the inbox
-      for (const email of emails) {
-        await deleteEmail(email.outlookEmailId);
+      // Check the toggle before deleting the original emails from the inbox
+      if (deleteEmailsToggle) {
+        for (const email of emails) {
+          await deleteEmail(email.outlookEmailId);
+        }
       }
   
       // Switch to Frame3
@@ -286,6 +290,13 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
     } catch (error) {
       console.error(`Error deleting email ${emailId}:`, error);
     }
+  };
+  
+  const toggleDeleteEmails = () => {
+    const newToggle = !deleteEmailsToggle;
+    setDeleteEmailsToggle(newToggle);
+    localStorage.setItem("deleteEmailsToggle", newToggle.toString());
+    console.log(`Delete emails toggle set to: ${newToggle}`);
   };
   
   useEffect(() => {
@@ -467,7 +478,13 @@ const Frame2: React.FC<Frame2Props> = ({ switchToFrame3, accessToken, requestInp
           }}
         />
         {showRejectionTemplateError && <Text style={{ color: "red" }}>Absageemail-Template ist erforderlich</Text>}
-
+        {/* Toggle Switch */}
+        <Switch
+          checked={deleteEmailsToggle}
+          onChange={toggleDeleteEmails}
+          label="Delete Emails from Inbox"
+          style={{ width: "100%", marginTop: "10px" }}
+        />
         {/* Drafts Button */}
         <Button
           appearance="primary"
