@@ -9,7 +9,7 @@
     "dependencies": {
         "@azure/cosmos": "3.9.1",
         "cors": "^2.8.5",
-        "express": "^4.21.0",
+        "express": "^4.21.2",
         "node-fetch": "^3.3.2"
     }
 }
