@@ -8,6 +8,8 @@ import App from './components/App';
 import './styles.less';
 import 'office-ui-fabric-react/dist/css/fabric.min.css';
 
+import { initializeGraphForAppOnlyAuth } from './graphHelper';
+
 initializeIcons();
 
 let isOfficeInitialized = false;
@@ -26,6 +28,7 @@ const render = (Component) => {
 /* Render application after Office initializes */
 Office.initialize = () => {
     isOfficeInitialized = true;
+    initializeGraphForAppOnlyAuth();
     render(App);
 };
 
