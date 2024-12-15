@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Stack, Text, PrimaryButton } from '@fluentui/react';
+import { Stack, Text, PrimaryButton, DefaultButton } from '@fluentui/react';
 
 interface ImmoMailScreenProps {
   login: () => void;
@@ -12,11 +12,12 @@ const ImmoMailScreen: React.FC<ImmoMailScreenProps> = ({ login }) => {
       horizontalAlign="center"
       styles={{
         root: {
-          height: '100vh', // Full viewport height to center vertically
+          height: '100vh',
           backgroundColor: '#ffffff',
+          position: 'relative', // allows us to position the feedback button at the bottom right
         },
       }}
-      tokens={{ childrenGap: 20 }} // Adds space between each child in the stack
+      tokens={{ childrenGap: 20 }}
     >
       {/* Icon, Title, and Paragraph in a single vertical stack */}
       <Stack verticalAlign="center" horizontalAlign="center" tokens={{ childrenGap: 15 }}>
@@ -97,17 +98,14 @@ const ImmoMailScreen: React.FC<ImmoMailScreenProps> = ({ login }) => {
         </Text>
 
         {/* Paragraph Text */}
-        <Text
-          variant="medium"
-          styles={{ root: { textAlign: 'center', fontSize: '14px' } }}
-        >
-          Wir helfen dir deine Mieteranfragen innerhalb weniger Minuten abzuarbeiten!
+        <Text variant="medium" styles={{ root: { textAlign: 'center', fontSize: '14px' } }}>
+          Wir helfen dir Mieteranfragen zu beantworten. Schnell und unkompliziert
         </Text>
       </Stack>
 
-      {/* Button */}
+      {/* Connect Button */}
       <PrimaryButton
-        text="Mit Office 365 Verbinden"
+        text="Mit Office 360 Verbinden"
         onClick={login}
         styles={{
           root: {
@@ -122,6 +120,32 @@ const ImmoMailScreen: React.FC<ImmoMailScreenProps> = ({ login }) => {
           rootHovered: {
             backgroundColor: '#1a1a1a',
             borderColor: '#1a1a1a',
+          },
+        }}
+      />
+
+      {/* Feedback Button at the bottom right */}
+      <DefaultButton
+        text="Feedback"
+        onClick={() => {
+          // handle feedback button click
+          alert('Feedback button clicked!');
+        }}
+        styles={{
+          root: {
+            position: 'absolute',
+            bottom: '20px',
+            right: '20px',
+            backgroundColor: '#f3f2f1',
+            borderColor: '#f3f2f1',
+            color: '#000000',
+            fontSize: '14px',
+            padding: '5px 15px',
+            borderRadius: '4px',
+          },
+          rootHovered: {
+            backgroundColor: '#e1dfdd',
+            borderColor: '#e1dfdd',
           },
         }}
       />
